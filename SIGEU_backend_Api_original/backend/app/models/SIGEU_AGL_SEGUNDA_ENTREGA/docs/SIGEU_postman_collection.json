@@ -1,0 +1,209 @@
+{
+  "info": {
+    "_postman_id": "7622f95f-5283-4708-917c-9e1151661c25",
+    "name": "SIGEU - CRUD Eventos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 - Crear Evento",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            ""
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Seminario SIGEU\",\n  \"descripcion\": \"Charlas técnicas de backend\",\n  \"fechaInicio\": \"2025-11-12T08:00:00\",\n  \"fechaFin\": \"2025-11-12T12:00:00\",\n  \"estado\": \"registrado\",\n  \"categoria\": \"academico\",\n  \"idOrganizador\": 1,\n  \"idInstalacion\": 2,\n  \"rutaAvalPDF\": \"/avales/aval_seminario.pdf\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201', () => pm.response.code === 201);",
+              "const json = pm.response.json();",
+              "pm.expect(json).to.have.property('idEvento');",
+              "pm.environment.set('createdId', json.idEvento);",
+              "pm.environment.set('organizadorId', json.idOrganizador);",
+              "pm.environment.set('instalacionId', json.idInstalacion);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Listar Eventos",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            ""
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', () => pm.response.code === 200);",
+              "const data = pm.response.json();",
+              "pm.expect(Array.isArray(data)).to.be.true;",
+              "pm.expect(data.length).to.be.above(0);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - Obtener Evento por ID",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/{{createdId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "{{createdId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', () => pm.response.code === 200);",
+              "const json = pm.response.json();",
+              "pm.expect(json.idEvento).to.eql(parseInt(pm.environment.get('createdId')));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - Actualizar Evento",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/{{createdId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "{{createdId}}"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Seminario SIGEU – edición 2\",\n  \"descripcion\": \"Actualizado\",\n  \"fechaInicio\": \"2025-11-12T09:00:00\",\n  \"fechaFin\": \"2025-11-12T13:00:00\",\n  \"estado\": \"enRevision\",\n  \"rutaAvalPDF\": \"/avales/aval_seminario_v2.pdf\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', () => pm.response.code === 200);",
+              "const json = pm.response.json();",
+              "pm.expect(json.estado).to.eql('enRevision');"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 - Eliminar Evento",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/{{createdId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "{{createdId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 204', () => pm.response.code === 204);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - Obtener Eliminado (404 esperado)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/{{createdId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "{{createdId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 404 tras borrado', () => pm.response.code === 404);"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

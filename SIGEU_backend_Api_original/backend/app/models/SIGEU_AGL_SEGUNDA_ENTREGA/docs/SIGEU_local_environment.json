@@ -1,0 +1,29 @@
+{
+  "id": "ab969627-4f5e-4d86-bfac-2d5ebf0de8a6",
+  "name": "SIGEU - Localhost",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000",
+      "enabled": true
+    },
+    {
+      "key": "createdId",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "organizadorId",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "instalacionId",
+      "value": "",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2025-10-06T02:07:34Z",
+  "_postman_exported_using": "SIGEU Generator"
+}
